@@ -1,0 +1,7 @@
+C:\Users\John\Desktop\c# Uppgifter\Spel - Tjuv och Polis\bin\Debug\Spel - Tjuv och Polis.exe.config
+C:\Users\John\Desktop\c# Uppgifter\Spel - Tjuv och Polis\bin\Debug\Spel - Tjuv och Polis.exe
+C:\Users\John\Desktop\c# Uppgifter\Spel - Tjuv och Polis\bin\Debug\Spel - Tjuv och Polis.pdb
+C:\Users\John\Desktop\c# Uppgifter\Spel - Tjuv och Polis\obj\Debug\Spel - Tjuv och Polis.csprojAssemblyReference.cache
+C:\Users\John\Desktop\c# Uppgifter\Spel - Tjuv och Polis\obj\Debug\Spel - Tjuv och Polis.csproj.CoreCompileInputs.cache
+C:\Users\John\Desktop\c# Uppgifter\Spel - Tjuv och Polis\obj\Debug\Spel - Tjuv och Polis.exe
+C:\Users\John\Desktop\c# Uppgifter\Spel - Tjuv och Polis\obj\Debug\Spel - Tjuv och Polis.pdb
