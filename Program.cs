@@ -8,6 +8,7 @@ using Microsoft.SqlServer.Server;
 using System.Security.Cryptography;
 using System.ComponentModel;
 using System.Xml.XPath;
+using System.Runtime.InteropServices;
 
 namespace Spel___Tjuv_och_Polis
 {
@@ -37,6 +38,15 @@ namespace Spel___Tjuv_och_Polis
                 else if (p.GetType().Name == "Citizen")
                 {
                     board[p.Xposition, p.Yposition] = "M";
+                }
+
+            }
+            foreach (var p in personsInCity)
+            {
+                if ()
+                {
+                    Console.WriteLine("X");
+
                 }
 
             }
@@ -80,7 +90,7 @@ namespace Spel___Tjuv_och_Polis
             return board;
         }
 
-        private static List<Person> MakePerson()
+        public static List<Person> MakePerson()
         {
             Random rnd = new Random();
             var city = new List<Person>();
