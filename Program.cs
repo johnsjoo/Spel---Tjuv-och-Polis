@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.SqlServer.Server;
 using System.Security.Cryptography;
 using System.ComponentModel;
+using System.Xml.XPath;
 
 namespace Spel___Tjuv_och_Polis
 {
@@ -14,70 +15,69 @@ namespace Spel___Tjuv_och_Polis
     {
         static void Main(string[] args)
         {
-            string [,] board = new string[100,25];
 
-            //Sätt alla platser på bordet till 1 space
-            for (int i = 0; i <100; i++)
-            { 
-                for (int j = 0; j <25; j++)
-                {
-                    board[i, j] = " ";
-                   // Console.Write(myArray[i,j]);
-                }
-                //Console.WriteLine();
-            }
 
-            //När personen skapas så rör den sig slumpmässigt. 
+            string[,] board = DrawCity();
+
+
+            //Lista som hämtar slumpmässiga positioner för varje enskild person i x och y-led.
             List<Person> personsInCity = MakePerson();
             
             foreach (var p in personsInCity)
             {
-                
-                if(p.GetType().Name == "Thief")
+
+                if (p.GetType().Name == "Thief")
                 {
-                        board[p.Xposition, p.Yposition] = "T";
+                    board[p.Xposition, p.Yposition] = "T";
                 }
                 else if (p.GetType().Name == "Police")
                 {
-                        board[p.Xposition, p.Yposition] = "P";
+                    board[p.Xposition, p.Yposition] = "P";
                 }
                 else if (p.GetType().Name == "Citizen")
                 {
-                        board[p.Xposition, p.Yposition] = "M";
+                    board[p.Xposition, p.Yposition] = "M";
                 }
 
-
             }
-            for (int i = 0; i < 100; i++)
+          
+            //Skriver ut våra bokstäver på spelplanen (P,M,T)
+            PrintPeople(board);
+            
+
+            Thread.Sleep(2000);
+            Console.ReadKey(true);
+        }
+
+        private static void PrintPeople(string[,] board)
+        {
+            for (int i = 0; i < 25; i++)
             {
-                for (int j = 0; j < 25; j++)
+                for (int j = 0; j < 100; j++)
                 {
-                    //board[i, j] = " ";
-                     Console.Write(board[i,j]);
+
+                    Console.Write(board[j, i]);
                 }
                 Console.WriteLine();
             }
-            /*
-            while (true)
-            {
+        }
 
-                Console.Write($"Antal rånade medborgare: ");
-                Console.Write($"Antal gripna tjuvar: ");
-                //Pausar programmet
-                Thread.Sleep(2000);
-            }
-            */
+        private static string[,] DrawCity()
+        {
+            string[,] board = new string[100, 25];
 
-            /*if (//Police xPosition == Thief xPosition && Police yPosition == Thief yPosition)
+            //Sätt alla platser på spelplanen till 1 space
+            for (int i = 0; i < 25; i++)
             {
-                //Thief Inventory == 0;
-                
+                for (int j = 0; j < 100; j++)
+                {
+                    board[j, i] = " ";
+
+                }
+
             }
-            if (//Citizen xPosition == Thief xPosition && Citizen yPosition == Thief yPosition)
-            {
-                //Add Random Thief to inventory
-            }*/
-            Console.ReadKey(true);
+
+            return board;
         }
 
         private static List<Person> MakePerson()
@@ -138,7 +138,7 @@ namespace Spel___Tjuv_och_Polis
         public Thief (int xPosition, int yPosition):base (xPosition, yPosition)
         { 
 
-            List<string> Thiefinventory = new List<string>();
+            List<string> thiefinventory = new List<string>();
 
         }
 
@@ -147,7 +147,7 @@ namespace Spel___Tjuv_och_Polis
     {
         public Police (int xPosition, int yPosition) : base(xPosition, yPosition)
         {
-            List<string> PoliceInventory = new List<string>();
+            List<string> policeInventory = new List<string>();
 
 
         }
