@@ -19,44 +19,87 @@ namespace Spel___Tjuv_och_Polis
 
 
             string[,] board = DrawCity();
-
-
             //Lista som hämtar slumpmässiga positioner för varje enskild person i x och y-led.
             List<Person> personsInCity = MakePerson();
-            
+            while (true)
+            {
+                board = DrawCity();
+
+                foreach (var p in personsInCity)
+                {
+                   
+
+                    if (p.GetType().Name == "Thief")
+                    {
+                        //en if else, är den ledig så skriver vi ut "T" annars "X" 
+                        board[p.Xposition, p.Yposition] = "T";
+                    }
+                    else if (p.GetType().Name == "Police")
+                    {
+                        //en if else, är den ledig så skriver vi ut "p" annars "X" 
+                        board[p.Xposition, p.Yposition] = "P";
+                    }
+                    else if (p.GetType().Name == "Citizen")
+                    {
+                        //en if else, är den ledig så skriver vi ut "m" annars "X" 
+                        board[p.Xposition, p.Yposition] = "M";
+                    }
+
+                }
+
+
+
+                //Skriver ut våra bokstäver på spelplanen (P,M,T)
+                PrintPeople(board);
+                personsInCity = UpdatePosition(personsInCity);
+
+                Thread.Sleep(2000);
+                Console.Clear();
+            }
+        }
+
+        private static List<Person> UpdatePosition(List<Person> personsInCity)
+        {
+            Random rnd = new Random();
             foreach (var p in personsInCity)
             {
+                if (p.Xposition>=99)
+                {
+                    p.Xposition -= 1;
 
-                if (p.GetType().Name == "Thief")
-                {
-                    board[p.Xposition, p.Yposition] = "T";
                 }
-                else if (p.GetType().Name == "Police")
+                else if (p.Xposition <= 0)
                 {
-                    board[p.Xposition, p.Yposition] = "P";
+                    p.Xposition += 1;
                 }
-                else if (p.GetType().Name == "Citizen")
+                else
                 {
-                    board[p.Xposition, p.Yposition] = "M";
+                    p.Xposition += Move(p.Xposition, rnd);
+                }
+                if (p.Yposition<=0)
+                {
+                    p.Yposition += 1;
+                }
+                else if (p.Yposition >= 24)
+                {
+                    p.Yposition -= 1;
+                }
+                else
+                {
+                    p.Yposition += Move(p.Yposition,rnd);
                 }
 
             }
-            foreach (var p in personsInCity)
-            {
-                if ()
-                {
-                    Console.WriteLine("X");
+            return personsInCity;
 
-                }
+        }
 
-            }
-          
-            //Skriver ut våra bokstäver på spelplanen (P,M,T)
-            PrintPeople(board);
+        public static int Move(int number, Random rnd) 
+        {
             
+            number = rnd.Next(-1,2);
+            return number;
 
-            Thread.Sleep(2000);
-            Console.ReadKey(true);
         }
 
         private static void PrintPeople(string[,] board)
@@ -94,7 +137,7 @@ namespace Spel___Tjuv_och_Polis
         {
             Random rnd = new Random();
             var city = new List<Person>();
-            for (int i = 0; i <= 10; i++)
+            for (int i = 0; i < 10; i++)
             {
                 
                 int x = rnd.Next(1, 100);
@@ -103,20 +146,20 @@ namespace Spel___Tjuv_och_Polis
                 city.Add(t);
 
             }
-            for (int i = 0; i <= 20; i++)
+            for (int i = 0; i < 20; i++)
             {
-                
+
                 int x = rnd.Next(1, 100);
                 int y = rnd.Next(1, 25);
-                Person m = new Citizen(x,y);
+                Person m = new Citizen(x, y);
                 city.Add(m);
             }
-            for (int i = 0; i <= 30; i++)
+            for (int i = 0; i < 30; i++)
             {
-                
+
                 int x = rnd.Next(1, 100);
                 int y = rnd.Next(1, 25);
-                Person p = new Police(x,y);
+                Person p = new Police(x, y);
                 city.Add(p);
             }
             return city;
@@ -132,7 +175,6 @@ namespace Spel___Tjuv_och_Polis
         {
             Xposition = xPosition;
             Yposition = yPosition;
-
 
         }
 
