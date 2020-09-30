@@ -31,7 +31,7 @@ namespace Spel___Tjuv_och_Polis
 
                     if (p.GetType().Name == "Thief")
                     {
-                        //en if else, är den ledig så skriver vi ut "T" annars "X" 
+                        
                         board[p.Xposition, p.Yposition] = "T";
                     }
                     else if (p.GetType().Name == "Police")
@@ -41,7 +41,7 @@ namespace Spel___Tjuv_och_Polis
                     }
                     else if (p.GetType().Name == "Citizen")
                     {
-                        //en if else, är den ledig så skriver vi ut "m" annars "X" 
+                        //en if else, är den ledig så skriver vi ut "" annars "X" 
                         board[p.Xposition, p.Yposition] = "M";
                     }
 
