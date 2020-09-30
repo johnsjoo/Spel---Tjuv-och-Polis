@@ -16,7 +16,8 @@ namespace Spel___Tjuv_och_Polis
     {
         static void Main(string[] args)
         {
-
+            int robedPeople = 0;
+            int thiefCaught = 0;
 
             string[,] board = DrawCity();
             //Lista som hämtar slumpmässiga positioner för varje enskild person i x och y-led.
@@ -24,37 +25,64 @@ namespace Spel___Tjuv_och_Polis
             while (true)
             {
                 board = DrawCity();
-
+                
                 foreach (var p in personsInCity)
                 {
-                   
 
-                    if (p.GetType().Name == "Thief")
-                    {
+                        if (p.GetType().Name == "Thief")
+                        {
+                            board[p.Xposition, p.Yposition] += "T";
+                       
                         
-                        board[p.Xposition, p.Yposition] = "T";
-                    }
-                    else if (p.GetType().Name == "Police")
+                        }
+                        else if (p.GetType().Name == "Police")
+                        {
+                         
+                            board[p.Xposition, p.Yposition] += "P";
+                        }
+                        else if (p.GetType().Name == "Citizen")
+                        {
+                        
+                            board[p.Xposition, p.Yposition] += "M";
+                        }
+
+                }
+                foreach (var p in personsInCity)
+                {
+                    if (board[p.Xposition,p.Yposition].Contains("T") && board[p.Xposition, p.Yposition].Contains("M"))
                     {
-                        //en if else, är den ledig så skriver vi ut "p" annars "X" 
-                        board[p.Xposition, p.Yposition] = "P";
+                        board[p.Xposition, p.Yposition] = "X";
+                        Console.WriteLine("Tjuv rånar medborgare");
+                        robedPeople++;
+                        
+
                     }
-                    else if (p.GetType().Name == "Citizen")
+                    else if (board[p.Xposition, p.Yposition].Contains("T") && board[p.Xposition, p.Yposition].Contains("P"))
                     {
-                        //en if else, är den ledig så skriver vi ut "" annars "X" 
-                        board[p.Xposition, p.Yposition] = "M";
+                        board[p.Xposition, p.Yposition] = "X";
+                        Console.WriteLine("Tjuv möter polis");
+                        thiefCaught++;
+                        
+                    }
+                    else if (board[p.Xposition, p.Yposition].Contains("M") && board[p.Xposition, p.Yposition].Contains("P"))
+                    {
+                        board[p.Xposition, p.Yposition] = "X";
+                        Console.WriteLine("Medborgare möter polis");
                     }
 
                 }
-
-
+                Console.WriteLine("------------------------------");
+                Console.WriteLine($"Fångade tjuvar: {thiefCaught}");
+                Console.WriteLine($"Rånade medborgare: {robedPeople}");
 
                 //Skriver ut våra bokstäver på spelplanen (P,M,T)
                 PrintPeople(board);
+                //Listan personInCity med alla våra personer är lika med en funktion som uppdaterar personernas kordinater.
                 personsInCity = UpdatePosition(personsInCity);
-
+                
                 Thread.Sleep(2000);
                 Console.Clear();
+
             }
         }
 
