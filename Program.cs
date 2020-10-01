@@ -16,81 +16,40 @@ namespace Spel___Tjuv_och_Polis
     {
         static void Main(string[] args)
         {
-            int robedPeople = 0;
-            int thiefCaught = 0;
+            //Skapar en array med listor i.
+            List<Person>[,] board = new List<Person>[100, 25];
 
-            string[,] board = DrawCity();
-            //Lista som hämtar slumpmässiga positioner för varje enskild person i x och y-led.
             List<Person> personsInCity = MakePerson();
             while (true)
             {
-                board = DrawCity();
-
-                foreach (var p in personsInCity)
-                {
-
-                    if (p.GetType().Name == "Thief")
-                    {
-                        board[p.Xposition, p.Yposition] += "T";
-
-
-                    }
-                    else if (p.GetType().Name == "Police")
-                    {
-
-                        board[p.Xposition, p.Yposition] += "P";
-                    }
-                    else if (p.GetType().Name == "Citizen")
-                    {
-
-                        board[p.Xposition, p.Yposition] += "M";
-                    }
-
-                }
-
-                foreach (var p in personsInCity)
-                {
-                    if (board[p.Xposition, p.Yposition].Contains("T") && board[p.Xposition, p.Yposition].Contains("M"))
-                    {
-                        
-                        board[p.Xposition, p.Yposition] = "X";
-                        Console.WriteLine("Tjuv rånar medborgare!");
-                        robedPeople++;
-
-
-                    }
-                    else if (board[p.Xposition, p.Yposition].Contains("T") && board[p.Xposition, p.Yposition].Contains("P"))
-                    {
-                        board[p.Xposition, p.Yposition] = "X";
-                        Console.WriteLine("Tjuv möter polis!");
-                        thiefCaught++;
-
-                    }
-                    else if (board[p.Xposition, p.Yposition].Contains("M") && board[p.Xposition, p.Yposition].Contains("P"))
-                    {
-                        board[p.Xposition, p.Yposition] = "X";
-                        Console.WriteLine("Medborgare möter polis, inget händer");
-                    }
-
-                }
-  
-                PrintPeople(board);
-                //Listan personInCity med alla våra personer är lika med en funktion som uppdaterar personernas kordinater.
+                ListsInArray(board, personsInCity);
+                DrawCity(board);
                 personsInCity = UpdatePosition(personsInCity);
-                Counter(robedPeople, thiefCaught);
                 Thread.Sleep(2000);
                 Console.Clear();
 
             }
         }
-        //Räknar rånade invånare och fångade tjuvar.
-        private static void Counter(int robedPeople, int thiefCaught)
-        {
-            Console.WriteLine("*******************");
-            Console.WriteLine($"Fångade tjuvar: {thiefCaught}");
-            Console.WriteLine($"Rånade medborgare: {robedPeople}");
-        }
 
+        private static void ListsInArray(List<Person>[,] board, List<Person> personsInCity)
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                for (int j = 0; j < 25; j++)
+                {
+                    board[i, j] = new List<Person>();
+                }
+
+            }
+
+            foreach (var p in personsInCity)
+            {
+
+                board[p.Xposition, p.Yposition].Add(p);
+
+            }
+        }
+        //Uppdatering av slumpmässig position samt kollar så ingen person hamnar utanför staden
         private static List<Person> UpdatePosition(List<Person> personsInCity)
         {
             Random rnd = new Random();
@@ -126,7 +85,7 @@ namespace Spel___Tjuv_och_Polis
             return personsInCity;
 
         }
-
+        //Genererar och returnerar en slumpmässig kordinat.
         public static int Move(int number, Random rnd)
         {
 
@@ -134,37 +93,65 @@ namespace Spel___Tjuv_och_Polis
             return number;
 
         }
-        //Skriver ut våra bokstäver på spelplanen (P,M,T)
-        private static void PrintPeople(string[,] board)
+
+        private static void DrawCity(List<Person>[,] board)
         {
+            
+
+            string messege = "";
+            
             for (int i = 0; i < 25; i++)
             {
                 for (int j = 0; j < 100; j++)
-                {
 
-                    Console.Write(board[j, i]);
+                {
+                    List<Person> currentList = board[j, i];
+                    if (!currentList.Any())
+                    {
+                        Console.Write(" ");
+                    }
+                    else if (currentList.Count == 1)
+                    {
+                        Person currentPerson = currentList.First();
+                        if (currentPerson.GetType().Name == "Thief")
+                        {
+                            Console.Write("T");
+                        }
+                        else if (currentPerson.GetType().Name == "Citizen")
+                        {
+                            Console.Write("M");
+                        }
+                        else if (currentPerson.GetType().Name == "Police")
+                        {
+                            Console.Write("P");
+                        }
+                    }
+                    
+                    else
+                    {
+                        Console.Write("X");
+                        if (currentList.OfType<Thief>().Any() && currentList.OfType<Citizen>().Any())
+                        {
+                            Item stolenItem=StealRandomItem(currentList);
+                            messege +=("Tjuv rånar medborgare på " + stolenItem.CiticenzItems + "\n");
+                            
+                        }
+                        else if (currentList.OfType<Thief>().Any() && currentList.OfType<Police>().Any())
+                        {
+                            ClearThiefInventory(currentList);
+                            messege+=("Tjuv möter polis!, Allt stöldgods beslagtogs \n");
+                            
+                        }
+                        
+                    }
                 }
                 Console.WriteLine();
+                
             }
+            Console.WriteLine(messege);
+            
         }
-
-        private static string[,] DrawCity()
-        {
-            string[,] board = new string[100, 25];
-
-            //Sätt alla platser på spelplanen till 1 space
-            for (int i = 0; i < 25; i++)
-            {
-                for (int j = 0; j < 100; j++)
-                {
-                    board[j, i] = " ";
-
-                }
-
-            }
-
-            return board;
-        }
+        
 
         public static List<Person> MakePerson()
         {
@@ -175,7 +162,7 @@ namespace Spel___Tjuv_och_Polis
 
                 int x = rnd.Next(1, 100);
                 int y = rnd.Next(1, 25);
-                Person t = new Thief(x, y);
+                Person t = new Thief(x, y, new List<Item>());
                 city.Add(t);
 
             }
@@ -184,7 +171,7 @@ namespace Spel___Tjuv_och_Polis
 
                 int x = rnd.Next(1, 100);
                 int y = rnd.Next(1, 25);
-                Person m = new Citizen(x, y);
+                Person m = new Citizen(x, y, new List<Item>());
                 city.Add(m);
             }
             for (int i = 0; i < 30; i++)
@@ -192,57 +179,91 @@ namespace Spel___Tjuv_och_Polis
 
                 int x = rnd.Next(1, 100);
                 int y = rnd.Next(1, 25);
-                Person p = new Police(x, y);
+                Person p = new Police(x, y, new List<Item>());
                 city.Add(p);
             }
             return city;
         }
-        public static void StealRandomItem(List<Item> citzenInventory, Random rnd)
+        //Stjäl ett slumpmässigt Item-Objekt och lägger det i tjuvent inventory.
+        public static Item StealRandomItem(List<Person> currentList)
         {
-
-            int index = rnd.Next(0,citzenInventory.Count);
+            List<Item> thiefInventory = new List<Item>();
+            List<Item> citzenInventory = new List<Item>();
+            foreach (var p in currentList)
+            {
+                if (p.GetType().Name == "Thief")
+                {
+                    thiefInventory = p.Inventory;
+                }
+                else if (p.GetType().Name == "Citizen")
+                {
+                    citzenInventory = p.Inventory;
+    
+                    
+                }
+            }
+            Random rnd = new Random();
+            int index = rnd.Next(0, citzenInventory.Count);
+ 
+            thiefInventory.Add(citzenInventory[index]);
             citzenInventory.RemoveAt(index);
+            return citzenInventory[index];
+        }
+        public static void ClearThiefInventory(List<Person> currentList)
+        {
+            
+            List<Item> thiefInventory = new List<Item>();
+
+            foreach (var p in currentList)
+            {
+               if (p.GetType().Name == "Thief")
+                {
+                    thiefInventory = p.Inventory;
+                }
+            }
+            thiefInventory.Clear();
+
 
         }
-     
-      
-
-
+        
+        
     }
     
     class Person 
     {
         
 
-        public Person(int xPosition, int yPosition) 
+        public Person(int xPosition, int yPosition, List<Item> inventory) 
         {
             Xposition = xPosition;
             Yposition = yPosition;
-
+            Inventory = inventory;
         }
         
         
         
         public int Xposition { get; set; }
         public int Yposition { get; set; }
-        public string Inventory { get; set; }
+        public List<Item> Inventory { get; set; }
 
     }
     class Thief : Person
     {
-        public Thief (int xPosition, int yPosition):base (xPosition, yPosition)
+
+
+        public Thief (int xPosition, int yPosition, List<Item> thiefInventory) :base (xPosition, yPosition, thiefInventory)
         { 
 
-            List<string> thiefInventory = new List<string>();
+            
 
         }
 
     }
     class Police : Person 
     {
-        public Police (int xPosition, int yPosition) : base(xPosition, yPosition)
+        public Police (int xPosition, int yPosition, List<Item> policeInventory) : base(xPosition, yPosition, policeInventory)
         {
-            List<string> policeInventory = new List<string>();
+            //policeInventory = new List<Item>();
 
 
         }
@@ -251,14 +272,14 @@ namespace Spel___Tjuv_och_Polis
     class Citizen : Person 
     {
         
-        public Citizen(int xPosition, int yPosition) : base(xPosition, yPosition)
+        public Citizen(int xPosition, int yPosition, List<Item> citzenInventory) : base(xPosition, yPosition, citzenInventory)
         {
-            List<Item> citzenInventory = new List<Item>();
+           
 
-            citzenInventory.Add(new Item("Nycklar"));
-            citzenInventory.Add(new Item("Mobiltelefon"));
-            citzenInventory.Add(new Item("Pengar"));
-            citzenInventory.Add(new Item("Klocka"));
+            citzenInventory.Add(new Item("nycklar"));
+            citzenInventory.Add(new Item("mobiltelefon"));
+            citzenInventory.Add(new Item("pengar"));
+            citzenInventory.Add(new Item("klocka"));
 
         }
 
