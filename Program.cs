@@ -217,9 +217,9 @@ namespace Spel___Tjuv_och_Polis
             foreach (var p in currentList)
             {
                if (p.GetType().Name == "Thief")
-                {
+               {
                     thiefInventory = p.Inventory;
-                }
+               }
             }
             thiefInventory.Clear();
 
@@ -263,7 +263,6 @@ namespace Spel___Tjuv_och_Polis
     {
         public Police (int xPosition, int yPosition, List<Item> policeInventory) : base(xPosition, yPosition, policeInventory)
         {
-            //policeInventory = new List<Item>();
 
 
         }
