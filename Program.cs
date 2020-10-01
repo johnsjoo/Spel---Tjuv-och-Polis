@@ -25,65 +25,76 @@ namespace Spel___Tjuv_och_Polis
             while (true)
             {
                 board = DrawCity();
-                
+
                 foreach (var p in personsInCity)
                 {
 
-                        if (p.GetType().Name == "Thief")
-                        {
-                            board[p.Xposition, p.Yposition] += "T";
-                       
-                        
-                        }
-                        else if (p.GetType().Name == "Police")
-                        {
-                         
-                            board[p.Xposition, p.Yposition] += "P";
-                        }
-                        else if (p.GetType().Name == "Citizen")
-                        {
-                        
-                            board[p.Xposition, p.Yposition] += "M";
-                        }
+                    if (p.GetType().Name == "Thief")
+                    {
+                        board[p.Xposition, p.Yposition] += "T";
+
+
+                    }
+                    else if (p.GetType().Name == "Police")
+                    {
+
+                        board[p.Xposition, p.Yposition] += "P";
+                    }
+                    else if (p.GetType().Name == "Citizen")
+                    {
+
+                        board[p.Xposition, p.Yposition] += "M";
+                    }
 
                 }
+
                 foreach (var p in personsInCity)
                 {
-                    if (board[p.Xposition,p.Yposition].Contains("T") && board[p.Xposition, p.Yposition].Contains("M"))
+                    if (board[p.Xposition, p.Yposition].Contains("T") && board[p.Xposition, p.Yposition].Contains("M"))
                     {
+
                         board[p.Xposition, p.Yposition] = "X";
-                        Console.WriteLine("Tjuv rånar medborgare");
+                        Console.WriteLine("Tjuv rånar medborgare!");
+
                         robedPeople++;
-                        
+
 
                     }
                     else if (board[p.Xposition, p.Yposition].Contains("T") && board[p.Xposition, p.Yposition].Contains("P"))
                     {
                         board[p.Xposition, p.Yposition] = "X";
-                        Console.WriteLine("Tjuv möter polis");
+                        Console.WriteLine("Tjuv möter polis!");
                         thiefCaught++;
-                        
+
                     }
                     else if (board[p.Xposition, p.Yposition].Contains("M") && board[p.Xposition, p.Yposition].Contains("P"))
                     {
                         board[p.Xposition, p.Yposition] = "X";
-                        Console.WriteLine("Medborgare möter polis");
+                        Console.WriteLine("Medborgare möter polis, inget händer");
                     }
 
                 }
-                Console.WriteLine("------------------------------");
-                Console.WriteLine($"Fångade tjuvar: {thiefCaught}");
-                Console.WriteLine($"Rånade medborgare: {robedPeople}");
 
+                
                 //Skriver ut våra bokstäver på spelplanen (P,M,T)
                 PrintPeople(board);
+
                 //Listan personInCity med alla våra personer är lika med en funktion som uppdaterar personernas kordinater.
                 personsInCity = UpdatePosition(personsInCity);
-                
+
+                //Räknar rånade invånare och fångade tjuvar.
+                Counter(robedPeople, thiefCaught);
                 Thread.Sleep(2000);
                 Console.Clear();
 
             }
+        }
+
+        private static void Counter(int robedPeople, int thiefCaught)
+        {
+            Console.WriteLine("*******************");
+            Console.WriteLine($"Fångade tjuvar: {thiefCaught}");
+            Console.WriteLine($"Rånade medborgare: {robedPeople}");
         }
 
         private static List<Person> UpdatePosition(List<Person> personsInCity)
@@ -91,7 +102,7 @@ namespace Spel___Tjuv_och_Polis
             Random rnd = new Random();
             foreach (var p in personsInCity)
             {
-                if (p.Xposition>=99)
+                if (p.Xposition >= 99)
                 {
                     p.Xposition -= 1;
 
@@ -104,7 +115,7 @@ namespace Spel___Tjuv_och_Polis
                 {
                     p.Xposition += Move(p.Xposition, rnd);
                 }
-                if (p.Yposition<=0)
+                if (p.Yposition <= 0)
                 {
                     p.Yposition += 1;
                 }
@@ -114,7 +125,7 @@ namespace Spel___Tjuv_och_Polis
                 }
                 else
                 {
-                    p.Yposition += Move(p.Yposition,rnd);
+                    p.Yposition += Move(p.Yposition, rnd);
                 }
 
             }
@@ -122,10 +133,10 @@ namespace Spel___Tjuv_och_Polis
 
         }
 
-        public static int Move(int number, Random rnd) 
+        public static int Move(int number, Random rnd)
         {
-            
-            number = rnd.Next(-1,2);
+
+            number = rnd.Next(-1, 2);
             return number;
 
         }
@@ -167,10 +178,10 @@ namespace Spel___Tjuv_och_Polis
             var city = new List<Person>();
             for (int i = 0; i < 10; i++)
             {
-                
+
                 int x = rnd.Next(1, 100);
                 int y = rnd.Next(1, 25);
-                Person t = new Thief(x,y);
+                Person t = new Thief(x, y);
                 city.Add(t);
 
             }
@@ -192,24 +203,36 @@ namespace Spel___Tjuv_och_Polis
             }
             return city;
         }
+        public static void StolenItem(List<Citizen> citzenInventory, Random rnd)
+        {
 
-        
+            int index = rnd.Next(0,citzenInventory.Count);
+            citzenInventory.RemoveAt(index);
+
+
+
+        }
+     
+      
+
+
     }
+    
     class Person 
     {
-
         
+
         public Person(int xPosition, int yPosition) 
         {
             Xposition = xPosition;
             Yposition = yPosition;
 
         }
-
+        
+        
+        
         public int Xposition { get; set; }
         public int Yposition { get; set; }
-        public int Xdirection { get; set; }
-        public int Ydirection { get; set; }
         public string Inventory { get; set; }
 
     }
@@ -218,7 +241,7 @@ namespace Spel___Tjuv_och_Polis
         public Thief (int xPosition, int yPosition):base (xPosition, yPosition)
         { 
 
-            List<string> thiefinventory = new List<string>();
+            List<string> thiefInventory = new List<string>();
 
         }
 
@@ -235,24 +258,28 @@ namespace Spel___Tjuv_och_Polis
     }
     class Citizen : Person 
     {
+        
         public Citizen(int xPosition, int yPosition) : base(xPosition, yPosition)
         {
-            List<string> citzeninventory = new List<string>();
-            citzeninventory.Add("nycklar");
-            citzeninventory.Add("mobiltelefon");
-            citzeninventory.Add("pengar");
-            citzeninventory.Add("klocka");
+            List<Item> citzenInventory = new List<Item>();
 
+            citzenInventory.Add(new Item("Nycklar"));
+            citzenInventory.Add(new Item("Mobiltelefon"));
+            citzenInventory.Add(new Item("Pengar"));
+            citzenInventory.Add(new Item("Klocka"));
         }
-        
 
     }
     class Item
     {
+        public Item(string citicenzItems)
+        {
+            CiticenzItems = citicenzItems;
 
-        public string StolenProperty { get; set; }
-        public string SeizedItems { get; set; }
-        public string CiticenzProperty { get; set; }
+        }
+        public string StolenItems { get; set; }
+        public string PoliceItems { get; set; }
+        public string CiticenzItems { get; set; }
 
     }
 }
