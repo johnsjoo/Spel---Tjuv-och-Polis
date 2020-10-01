@@ -52,10 +52,9 @@ namespace Spel___Tjuv_och_Polis
                 {
                     if (board[p.Xposition, p.Yposition].Contains("T") && board[p.Xposition, p.Yposition].Contains("M"))
                     {
-
+                        
                         board[p.Xposition, p.Yposition] = "X";
                         Console.WriteLine("Tjuv rånar medborgare!");
-
                         robedPeople++;
 
 
@@ -74,22 +73,17 @@ namespace Spel___Tjuv_och_Polis
                     }
 
                 }
-
-                
-                //Skriver ut våra bokstäver på spelplanen (P,M,T)
+  
                 PrintPeople(board);
-
                 //Listan personInCity med alla våra personer är lika med en funktion som uppdaterar personernas kordinater.
                 personsInCity = UpdatePosition(personsInCity);
-
-                //Räknar rånade invånare och fångade tjuvar.
                 Counter(robedPeople, thiefCaught);
                 Thread.Sleep(2000);
                 Console.Clear();
 
             }
         }
-
+        //Räknar rånade invånare och fångade tjuvar.
         private static void Counter(int robedPeople, int thiefCaught)
         {
             Console.WriteLine("*******************");
@@ -140,7 +134,7 @@ namespace Spel___Tjuv_och_Polis
             return number;
 
         }
-
+        //Skriver ut våra bokstäver på spelplanen (P,M,T)
         private static void PrintPeople(string[,] board)
         {
             for (int i = 0; i < 25; i++)
@@ -203,13 +197,11 @@ namespace Spel___Tjuv_och_Polis
             }
             return city;
         }
-        public static void StolenItem(List<Citizen> citzenInventory, Random rnd)
+        public static void StealRandomItem(List<Item> citzenInventory, Random rnd)
         {
 
             int index = rnd.Next(0,citzenInventory.Count);
             citzenInventory.RemoveAt(index);
-
-
 
         }
      
@@ -267,6 +259,7 @@ namespace Spel___Tjuv_och_Polis
             citzenInventory.Add(new Item("Mobiltelefon"));
             citzenInventory.Add(new Item("Pengar"));
             citzenInventory.Add(new Item("Klocka"));
+
         }
 
     }
